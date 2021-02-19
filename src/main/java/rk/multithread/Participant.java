@@ -32,6 +32,12 @@ public class Participant implements Listener, Speaker, Runnable {
 	@Override
 	public void run() {
 		currentThread = Thread.currentThread();
+		startDiscussing();
+		readRemainingMsgs();
+		System.out.printf("name : %s, msgs : %d exiting%n", currentThread.getName(), messageQueue.size());
+	}
+
+	private void startDiscussing() {
 		speak();
 		while (!currentThread.isInterrupted()) {
 			try {
@@ -41,12 +47,14 @@ public class Participant implements Listener, Speaker, Runnable {
 				currentThread.interrupt();
 			}
 		}
+	}
+
+	private void readRemainingMsgs() {
 		Message msg =messageQueue.poll();
 		while(msg != null) {
 			msg.print(currentThread.getName());
 			msg = messageQueue.poll();
 		}
-		System.out.printf("name : %s, msgs : %d exiting%n", currentThread.getName(), messageQueue.size());
 	}
 
 	@Override
